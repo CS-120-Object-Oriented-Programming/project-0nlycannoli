@@ -76,4 +76,9 @@ public class Room {
 	public static int getCounter() {
 		return counter;
 	}
+
+	public Room getExit(String direction) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
