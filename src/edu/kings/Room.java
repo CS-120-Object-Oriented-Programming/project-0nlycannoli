@@ -1,4 +1,7 @@
 package edu.kings;
+
+import java.util.HashMap;
+
 /**
  * Class Room - a room in an adventure game.
  *
@@ -21,16 +24,16 @@ public class Room {
 	private String name;
 	/** The description of this room. */
 	private String description;
-
-	/** This room's north exit, null if none exits. */
-	public Door northExit;
-	/** This room's south exit, null if none exits. */
-	public Door southExit;
-	/** This room's east exit, null if none exits. */
-	public Door eastExit;
-	/** This room's west exit, null if none exits. */
-	public Door westExit;
-
+	  
+	private HashMap<String, Door> exits;
+	
+	public void setExit(String direction, Door neighbor) {
+		exits.put(direction, neighbor); 
+	}
+	public Door getExit(String direction) {
+		return exits.get(direction); 
+		
+	}
 	/**
 	 * Static initializer.
 	 */
@@ -45,7 +48,8 @@ public class Room {
 	 * @param description
 	 *            The room's description.
 	 */
-	public Room(String name, String description) {
+	public Room(String name, String description) { 
+		exits = new HashMap<String, Door>();  
 		this.name = name;
 		this.description = description;
 		counter++;
@@ -77,8 +81,6 @@ public class Room {
 		return counter;
 	}
 
-	public Room getExit(String direction) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 }
+

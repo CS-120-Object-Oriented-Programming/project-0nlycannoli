@@ -1,13 +1,10 @@
 package edu.kings;
+
 import java.util.HashMap;
 
 /**
- * This class represents the entire world that makes up the "Campus of Kings"
- * application. "Campus of Kings" is a very simple, text based adventure game.
- * Users can walk around some scenery. That's all. It should really be extended
- * to make it more interesting!
- *
- * This world class creates the world where the game takes place.
+ * Represents the entire world for the "Campus of Kings" text adventure.
+ * Creates all rooms and connects them with directional exits.
  *
  * @author Maria Jump
  * @version 2015.02.01
@@ -15,145 +12,105 @@ import java.util.HashMap;
  * Used with permission from Dr. Maria Jump at Northeastern University
  */
 public class World {
-	/** The rooms in the world. */
-	private HashMap<String, Room> rooms;
 
-	/**
-	 * Constructor for the world.
-	 */
-	public World() {
-		rooms = new HashMap<String, Room>();
-		createRooms();
-	}
+    /** All rooms in the world, stored by lowercase name. */
+    private HashMap<String, Room> rooms;
+    
 
-	/**
-	 * This method takes care of creating all of the aspects of the world for
-	 * the "Campus of Kings" application.
-	 *
-	 * @param name
-	 *            The provided name of the room.
-	 * @return The room associated with the provided name
-	 */
-	public Room getRoom(String name) {
-		return rooms.get(name.toLowerCase());
-	}
+    /**
+     * Constructs the world and initializes all rooms.
+     */
+    public World() {
+        rooms = new HashMap<>();
+        createRooms();
+    }
 
-	/////////////////////////////////////////////////////////////////////////////////////
-	// Start of private helper methods
+    /**
+     * Retrieves a room by name (case‑insensitive).
+     *
+     * @param name The name of the room.
+     * @return The matching Room, or null if not found.
+     */
+    public Room getRoom(String name) {
+        if (name == null) return null;
+        return rooms.get(name.toLowerCase());
+    }
 
-	/**
-	 * Helper method for recreating a Room. Ensure that the room is created and
-	 * installed in to the collection of Rooms
-	 *
-	 * @param theRoom
-	 *            The room to add to the world.
-	 */
-	private void addRoom(Room theRoom) {
-		rooms.put(theRoom.getName().toLowerCase(), theRoom);
-	}
+    // --------------------------------------------------------------------
+    // Private helper methods
+    // --------------------------------------------------------------------
 
-	/**
-	 * Helper method for creating doors between rooms.
-	 *
-	 * @param from
-	 *            The room where the door originates.
-	 * @param north
-	 *            The room to the north of the originating room.
-	 */
-	private void createNorthDoor(Room from, Room north) {
-		Door northDoor = new Door(north);
-		from.northExit = northDoor;
-	}
+    /** Adds a room to the world. */
+    private void addRoom(Room room) {
+        rooms.put(room.getName().toLowerCase(), room);
+    }
 
-	/**
-	 * Helper method for creating doors between rooms.
-	 *
-	 * @param from
-	 *            The room where the door originates.
-	 * @param east
-	 *            The room to the east of the originating room.
-	 */
-	private void createEastDoor(Room from, Room east) {
-		Door eastDoor = new Door(east);
-		from.eastExit = eastDoor;
-	}
+    /** Creates a north door. */
+    private void createDoor(Room from, String direction, Room to) {
+    	from.setExit(direction,new Door(to));
+    	
+    }
 
-	/**
-	 * Helper method for creating doors between rooms.
-	 *
-	 * @param from
-	 *            The room where the door originates.
-	 * @param south
-	 *            The room to the south of the originating room.
-	 */
-	private void createSouthDoor(Room from, Room south) {
-		Door southDoor = new Door(south);
-		from.southExit = southDoor;
-	}
+    /**
+     * Creates all rooms and connects them.
+     */
+    private void createRooms() {
 
-	/**
-	 * Helper method for creating doors between rooms.
-	 *
-	 * @param from
-	 *            The room where the door originates.
-	 * @param west
-	 *            The room to the west of the originating room.
-	 */
-	private void createWestDoor(Room from, Room west) {
-		Door westDoor = new Door(west);
-		from.westExit = westDoor;
-	}
+        // Create rooms
+        Room outside       = new Room("Outside", "outside in the center of the King's College campus.");
+        Room holyCross     = new Room("Holy Cross", "at one of two main dormitories on campus.");
+        Room essef         = new Room("Essef", "at the other main dormitory on campus.");
+        Room campusCenter  = new Room("Campus Center", "in the center of student activities on campus.");
+        Room admin         = new Room("Admin", "in the oldest building on campus and home to the computer science department.");
+        Room silvaOffice   = new Room("Silva's Office", "in Dr. Silva's office.");
+        Room janoskiOffice = new Room("Janoski's Office", "in Dr. Janoski's office.");
+        Room lab           = new Room("Computer Lab", "in the Computer Science and Math computing lab.");
+        Room classroom     = new Room("Classroom", "in the classroom where the computer science classes are taught.");
 
-	/**
-	 * This method creates all of the individual places in this world and all
-	 * the doors connecting them.
-	 */
-	private void createRooms() {
-		// Creating all the rooms.
-		Room outside = new Room("Outside", "outside in the center of the King's College campus.");
-		Room holyCross = new Room("Holy Cross", "at one of two main dormitories on campus.");
-		Room essef = new Room("Essef", "at the other main dormitory on campus.");
-		Room campusCenter = new Room("Campus Center", "in the center of student activities on campus.");
-		Room admin = new Room("Admin", "in the oldest building on campus and home to the computer science department.");
-		Room slivaOffice = new Room("Sliva's Office", "in Dr Sliva's office.");
-		Room janoskiOffice = new Room("Janoski's Office", "in Dr Janoski's office.");
-		Room lab = new Room("Computer Lab", "in the Computer Science and Math computing lab.");
-		Room classroom = new Room("Classroom", "in the classroom where the computer science classes are taught.");
+        // Add rooms to world
+        addRoom(outside);
+        addRoom(holyCross);
+        addRoom(essef);
+        addRoom(campusCenter);
+        addRoom(admin);
+        addRoom(silvaOffice);
+        addRoom(janoskiOffice);
+        addRoom(lab);
+        addRoom(classroom);
 
-		// Adding all the rooms to the world.
-		this.addRoom(outside);
-		this.addRoom(holyCross);
-		this.addRoom(essef);
-		this.addRoom(campusCenter);
-		this.addRoom(admin);
-		this.addRoom(slivaOffice);
-		this.addRoom(janoskiOffice);
-		this.addRoom(lab);
-		this.addRoom(classroom);
+        // ------------------------------------------------------------
+        // Create connections (bidirectional where appropriate)
+        // ------------------------------------------------------------
 
-		// Creating all the doors between the rooms.
-		this.createSouthDoor(essef, outside);
-		this.createNorthDoor(outside, essef);
+        createDoor(essef, "south", outside);
+        createDoor(outside, "north", essef); 
+       
 
-		this.createEastDoor(campusCenter, outside);
-		this.createWestDoor(outside, campusCenter);
+        createDoor(campusCenter, "east", outside); 
+        createDoor(outside, "west", campusCenter); 
+        
 
-		this.createEastDoor(outside, holyCross);
-		this.createWestDoor(holyCross, outside);
+        createDoor(outside, "east", holyCross); 
+        createDoor(holyCross, "west", outside); 
+        
 
-		this.createSouthDoor(outside, admin);
-		this.createNorthDoor(admin, outside);
+        createDoor(outside, "south", admin); 
+        createDoor(admin, "north", outside); 
+        
 
-		this.createEastDoor(admin, lab);
-		this.createWestDoor(lab, admin);
+        createDoor(admin, "east", lab); 
+        createDoor(lab, "west", admin); 
+      
+        createDoor(admin, "south", janoskiOffice); 
+        createDoor(janoskiOffice, "north", admin); 
+        
 
-		this.createSouthDoor(admin, janoskiOffice);
-		this.createNorthDoor(janoskiOffice, admin);
+        createDoor(admin, "west", silvaOffice); 
+        createDoor(silvaOffice, "east", janoskiOffice); 
+       
 
-		this.createWestDoor(admin, slivaOffice);
-		this.createEastDoor(slivaOffice, admin);
-
-		this.createSouthDoor(lab, classroom);
-		this.createNorthDoor(classroom, lab);
-	}
+        createDoor(lab, "south", classroom); 
+        createDoor(classroom, "north", lab); 
+       
+    }
 }

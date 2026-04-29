@@ -12,7 +12,7 @@ public class Player {
         return currentRoom;
     }
 
-    public void setCurrentRoom(Room room) {
-        this.currentRoom = room;
+    public void setCurrentRoom(Room newRoom) {
+        this.currentRoom = newRoom;
     }
 }

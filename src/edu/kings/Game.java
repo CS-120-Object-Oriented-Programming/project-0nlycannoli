@@ -1,4 +1,5 @@
 package edu.kings;
+
 /**
  * This class is the main class of the "Campus of Kings" application.
  * "Campus of Kings" is a very simple, text based adventure game. Users can walk
@@ -14,190 +15,164 @@ package edu.kings;
  *
  * Used with permission from Dr. Maria Jump at Northeastern University
  */
-
 public class Game {
-	/** The world where the game takes place. */
-	private World world;
-	/** The room the player character is currently in. */
-	private Player player;  
 
-	/**
-	 * Create the game and initialize its internal map.
-	 */
-	public Game() {
-		world = new World();
-		// set the starting room
-        player = new Player(world.getRoom("outside")); 
+    /** The world where the game takes place. */
+    private World world;
 
-	}
+    /** The player character. */
+    private Player player;
 
-	/**
-	 * Main play routine. Loops until end of play.
-	 */
-	public void play() {
-		printWelcome();
+    /** The player's score. */
+    private int score = 0;
 
-		// Enter the main game loop. Here we repeatedly read commands and
-		// execute them until the game is over.
-		boolean wantToQuit = false;
-		while (!wantToQuit) {
-			Command command = Reader.getCommand();
-			wantToQuit = processCommand(command);
-			// other stuff that needs to happen every turn can be added here.
-		}
-		printGoodbye();
-	}
+    /** The total number of turns taken. */
+    private int total_number_of_turns = 0;
 
-	///////////////////////////////////////////////////////////////////////////
-	// Helper methods for processing the commands
+    /**
+     * Create the game and initialize its internal map.
+     */
+    public Game() {
+        world = new World();
+        // set the starting room
+        player = new Player(world.getRoom("outside"));
+    }
 
-	/**
-	 * Given a command, process (that is: execute) the command.
-	 *
-	 * @param command
-	 *            The command to be processed.
-	 * @return true If the command ends the game, false otherwise.
-	 */
-	private boolean processCommand(Command command) {
-		boolean wantToQuit = false;
+    /**
+     * Main play routine. Loops until end of play.
+     */
+    public void play() {
+        printWelcome();
 
-		if (command.isUnknown()) {
-			Writer.println("I don't know what you mean...");
-		} else {
+        // Enter the main game loop. Here we repeatedly read commands and
+        // execute them until the game is over.
+        boolean wantToQuit = false;
+        while (!wantToQuit) {
+            Command command = Reader.getCommand();
+            total_number_of_turns++;
+            wantToQuit = processCommand(command);
+            // other stuff that needs to happen every turn can be added here.
+        }
+        printGoodbye();
+    }
 
-			String commandWord = command.getCommandWord();
-			if (commandWord.equals("help")) {
-				printHelp();
-			} else if (commandWord.equals("go")) {
-				goRoom(command);
-			} else if (commandWord.equals("quit")) {
-				wantToQuit = quit(command);
-			} else {
-				Writer.println(commandWord + " is not implemented yet!");
-			}
-		}
-		return wantToQuit;
-	}
+    ///////////////////////////////////////////////////////////////////////////
+    // Helper methods for processing the commands
 
-	///////////////////////////////////////////////////////////////////////////
-	// Helper methods for implementing all of the commands.
-	// It helps if you organize these in alphabetical order.
+    /**
+     * Given a command, process (that is: execute) the command.
+     *
+     * @param command
+     *            The command to be processed.
+     * @return true If the command ends the game, false otherwise.
+     */
+    private boolean processCommand(Command command) {
+        boolean wantToQuit = false;
 
-	/**
-	 * Try to go to one direction. If there is an exit, enter the new room,
-	 * otherwise print an error message.
-	 *
-	 * @param command
-	 *            The command to be processed.
-	 */
-	private void goRoom(Command command) {
-		if (!command.hasSecondWord()) {
-			// if there is no second word, we don't know where to go...
-			Writer.println("Go where?");
-		} else {
-			String direction = command.getRestOfLine();
+        if (command.isUnknown()) {
+            Writer.println("I don't know what you mean...");
+        } else {
 
-			// Try to leave current.
-			Door doorway = null;
-			if (direction.equals("north")) {
-				doorway = player.getCurrentRoom().northExit;
-			}
-			if (direction.equals("east")) {
-				doorway = player.getCurrentRoom().eastExit;
-			}
-			if (direction.equals("south")) {
-				doorway = player.getCurrentRoom().southExit;
-			}
-			if (direction.equals("west")) {
-				doorway = player.getCurrentRoom().westExit;
-			}
+            String commandWord = command.getCommandWord();
+            if (commandWord.equals("help")) {
+                printHelp();
+            } else if (commandWord.equals("go")) {
+                goRoom(command);
+            } else if (commandWord.equals("quit")) {
+                wantToQuit = quit(command);
+            } else {
+                Writer.println(commandWord + " is not implemented yet!");
+            }
+        }
+        return wantToQuit;
+    }
 
-			if (doorway == null) {
-				Writer.println("There is no door!");
-			} else {
-				Room newRoom = doorway.getDestination();
-				player.setCurrentRoom(newRoom);
-				Writer.println(newRoom.getName() + ":");
-				Writer.println("You are " + newRoom.getDescription());
-				Writer.print("Exits: ");
-				if (newRoom.northExit != null) {
-					Writer.print("north ");
-				}
-				if (newRoom.eastExit != null) {
-					Writer.print("east ");
-				}
-				if (newRoom.southExit != null) {
-					Writer.print("south ");
-				}
-				if (newRoom.westExit != null) {
-					Writer.print("west ");
-				}
-				Writer.println();
-			}
-		}
-	}
+    ///////////////////////////////////////////////////////////////////////////
+    // Helper methods for implementing all of the commands.
+    // It helps if you organize these in alphabetical order.
 
-	/**
-	 * Print out the closing message for the player.
-	 */
-	private void printGoodbye() {
-		Writer.println("I hope you weren't too bored here on the Campus of Kings!");
-		Writer.println("Thank you for playing.  Good bye.");
-	}
+    /**
+     * Try to go to one direction. If there is an exit, enter the new room,
+     * otherwise print an error message.
+     *
+     * @param command
+     *            The command to be processed.
+     */
+    private void goRoom(Command command) {
+        if (!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            Writer.println("Go where?");
+        } else {
+            String direction = command.getRestOfLine();
 
-	/**
-	 * Print out some help information. Here we print some stupid, cryptic
-	 * message and a list of the command words.
-	 */
-	private void printHelp() {
-		Writer.println("You are lost. You are alone. You wander");
-		Writer.println("around at the university.");
-		Writer.println();
-		Writer.println("Your command words are:");
-		Writer.println("   go quit help");
-	}
+            // Try to leave current room using the Room's exit map.
+            Room doorway = player.getCurrentRoom().getExit(direction).getDestination();
 
-	/**
-	 * Print out the opening message for the player.
-	 */
-	private void printWelcome() {
-		Writer.println();
-		Writer.println("Welcome to the Campus of Kings!");
-		Writer.println("Campus of Kings is a new, incredibly boring adventure game.");
-		Writer.println("Type 'help' if you need help.");
-		Writer.println();
-		Writer.println(player.getCurrentRoom().getName() + ":"); 
-		Writer.println("You are " + (player.getCurrentRoom().getDescription()));
-		Writer.print("Exits: ");
-		if (player.getCurrentRoom().northExit != null) {
-			Writer.print("north ");
-		}
-		if (player.getCurrentRoom().eastExit != null) {
-			Writer.print("east ");
-		}
-		if (player.getCurrentRoom().southExit != null) {
-			Writer.print("south ");
-		}
-		if (player.getCurrentRoom().westExit != null) {
-			Writer.print("west ");
-		}
-		Writer.println("");
-	}
+            if (doorway == null) {
+                Writer.println("There is no door!");
+            } else {
+                Room newRoom = doorway;
+                player.setCurrentRoom(newRoom);
+                printLocationInformation();
+            }
+        }
+    }
 
-	/**
-	 * "Quit" was entered. Check the rest of the command to see whether we
-	 * really quit the game.
-	 *
-	 * @param command
-	 *            The command to be processed.
-	 * @return true, if this command quits the game, false otherwise.
-	 */
-	private boolean quit(Command command) {
-		boolean wantToQuit = true;
-		if (command.hasSecondWord()) {
-			Writer.println("Quit what?");
-			wantToQuit = false;
-		}
-		return wantToQuit;
-	}
+    /**
+     * Prints out the current location and exits.
+     */
+    private void printLocationInformation() {
+        Writer.println(player.getCurrentRoom().toString());
+    }
+
+    /**
+     * Print out the closing message for the player.
+     */
+    private void printGoodbye() {
+        Writer.println("I hope you weren't too bored here on the Campus of Kings!");
+        Writer.println("Thank you for playing.  Good bye.");
+        Writer.println("You have earned " + score + " points in "
+                + total_number_of_turns + " turns.");
+    }
+
+    /**
+     * Print out some help information. Here we print some stupid, cryptic
+     * message and a list of the command words.
+     */
+    private void printHelp() {
+        Writer.println("You are lost. You are alone. You wander");
+        Writer.println("around at the university.");
+        Writer.println();
+        Writer.println("Your command words are:");
+        Writer.println("   go quit help");
+    }
+
+    /**
+     * Print out the opening message for the player.
+     */
+    private void printWelcome() {
+        Writer.println();
+        Writer.println("Welcome to the Campus of Kings!");
+        Writer.println("Campus of Kings is a new, incredibly boring adventure game.");
+        Writer.println("Type 'help' if you need help.");
+        Writer.println();
+        printLocationInformation();
+    }
+
+    /**
+     * "Quit" was entered. Check the rest of the command to see whether we
+     * really quit the game.
+     *
+     * @param command
+     *            The command to be processed.
+     * @return true, if this command quits the game, false otherwise.
+     */
+    private boolean quit(Command command) {
+        boolean wantToQuit = true;
+        if (command.hasSecondWord()) {
+            Writer.println("Quit what?");
+            wantToQuit = false;
+        }
+        return wantToQuit;
+    }
 }

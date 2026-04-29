@@ -1,0 +1,13 @@
+
+Welcome to the Campus of Kings!
+Campus of Kings is a new, incredibly boring adventure game.
+Type 'help' if you need help.
+
+Outside:
+You are outside in the center of the King's College campus.
+Exits: north east south west 
+> exit
+I don't know what you mean...
+> quit
+I hope you weren't too bored here on the Campus of Kings!
+Thank you for playing.  Good bye.
