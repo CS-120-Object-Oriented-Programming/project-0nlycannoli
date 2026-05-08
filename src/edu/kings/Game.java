@@ -200,8 +200,6 @@ public class Game {
 
         player.setCurrentRoom(door.getDestination());
         printLocationInformation();
-        player.setCurrentRoom(door.getDestination());
-        printLocationInformation();
 
         // Check for victory after entering a new room
         if (checkVictory()) {
@@ -225,7 +223,7 @@ public class Game {
                 Writer.println("The ship's systems roar back to life!");
                 Writer.println("Humanity will survive and you’ve reignited hope among the stars!");
                 Writer.println();
-                Writer.println("CONGRATULATIONS YOU'VE HAVE SAVED HUMANITY!");
+                Writer.println("CONGRATULATIONS, YOU CAN NOW EXPLORE SPACE FOR A CURE TO SAVE HUMANITY!");
                 score += 100;
                 return true;
             }
@@ -243,7 +241,7 @@ public class Game {
             Writer.println("You collapse to the floor as the ship’s life‑support systems fail...");
             Writer.println("Darkness closes in as the Ecliptica drifts into the void.");
             Writer.println();
-            Writer.println("YOU HAVE FAILED HUMANITY");
+            Writer.println("YOU HAVE FAILED ");
             hasLost = true;
             return true;
         }

@@ -4,17 +4,13 @@ You are humanity’s last hope — a lone explorer waking from cryofreeze.
 Explore the ship, gather keycards, and restart the engines to save Earth.
 Type 'help' for a list of commands.
 
-edu.kings.Room@319b92f3
-> help
-You are aboard the starship *Ecliptica*.
-Explore rooms, find keycards, and restart the reactor to save humanity.
+You are in the Cryopod Room.
+You awaken from cryofreeze after a century of sleep. Frost still clings to your pod. Dim lights flicker overhead.
+Exits: east 
 
-Available commands:
-go <direction> - Move north, south, east, or west
-look - Examine your surroundings
-take <item> - Pick up an item in the room
-use <item> - Use an item, like a keycard, to unlock a door
-inventory - View items you’re carrying
-help - Display this list again
-quit - End the game
+> go east
+You are in the Cafeteria.
+The once-bustling crew cafeteria lies silent. Food trays float in zero‑G.
+Exits: east south west 
+
 > 

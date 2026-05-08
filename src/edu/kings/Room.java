@@ -79,6 +79,23 @@ public class Room {
 	 */
 	public static int getCounter() {
 		return counter;
+		
+	}
+	@Override
+	public String toString() {
+	    StringBuilder roomInfo = new StringBuilder();
+	    roomInfo.append("You are in the ").append(name).append(".\n");
+	    roomInfo.append(description).append("\n");
+
+	    if (!exits.isEmpty()) {
+	        roomInfo.append("Exits: ");
+	        for (String direction : exits.keySet()) {
+	            roomInfo.append(direction).append(" ");
+	        }
+	        roomInfo.append("\n");
+	    }
+
+	    return roomInfo.toString();
 	}
 
 	
