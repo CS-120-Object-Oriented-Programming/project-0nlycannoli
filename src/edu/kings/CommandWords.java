@@ -20,7 +20,7 @@ public class CommandWords {
 	 * Static block to initialize the fields of CommandWords.
 	 */
 	static {
-		String[] tempCommands = {"go", "quit", "help" };
+		String[] tempCommands = {"go", "quit", "help", "look", "take", "use", "inventory"};
 		validCommands = tempCommands;
 	}
 

@@ -2,7 +2,7 @@ package edu.kings;
 /**
  * Class Door - a door or portal between two Rooms in an adventure game.
  *
- * This class is part of the "Campus of Kings" application. "Campus of Kings" is a
+ * This class is part of the "Savior of Humanity" application. "Savior of Humanity" is a
  * very simple, text based adventure game.
  *
  * A "Door" represents a door or portal between two locations of the game.

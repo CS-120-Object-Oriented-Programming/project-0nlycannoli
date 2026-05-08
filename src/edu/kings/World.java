@@ -1,159 +1,142 @@
 package edu.kings;
+
 import java.util.HashMap;
 
 /**
- * This class represents the entire world that makes up the "Campus of Kings"
- * application. "Campus of Kings" is a very simple, text based adventure game.
- * Users can walk around some scenery. That's all. It should really be extended
- * to make it more interesting!
+ * Represents the "Savior of Humanity" spaceship world.
+ * The player awakens from cryofreeze and must navigate
+ * the ship, collecting keycards and restoring systems to save humanity.
  *
- * This world class creates the world where the game takes place.
- *
- * @author Maria Jump
- * @version 2015.02.01
- *
- * Used with permission from Dr. Maria Jump at Northeastern University
+ * @author Cody Aniche-Farrell
+ * @version 2026.05.05
  */
 public class World {
-	/** The rooms in the world. */
-	private HashMap<String, Room> rooms;
 
-	/**
-	 * Constructor for the world.
-	 */
-	public World() {
-		rooms = new HashMap<String, Room>();
-		createRooms();
-	}
+    /** All rooms in the spaceship, stored by lowercase name. */
+    private HashMap<String, Room> rooms;
 
-	/**
-	 * This method takes care of creating all of the aspects of the world for
-	 * the "Campus of Kings" application.
-	 *
-	 * @param name
-	 *            The provided name of the room.
-	 * @return The room associated with the provided name
-	 */
-	public Room getRoom(String name) {
-		return rooms.get(name.toLowerCase());
-	}
+    /**
+     * Constructs the world and initializes all ship rooms.
+     */
+    public World() {
+        rooms = new HashMap<>();
+        createRooms();
+    }
 
-	/////////////////////////////////////////////////////////////////////////////////////
-	// Start of private helper methods
+    /**
+     * Retrieves a room by name (case‑insensitive).
+     *
+     * @param name The room name.
+     * @return The matching Room, or null if not found.
+     */
+    public Room getRoom(String name) {
+        if (name == null) return null;
+        return rooms.get(name.toLowerCase());
+    }
 
-	/**
-	 * Helper method for recreating a Room. Ensure that the room is created and
-	 * installed in to the collection of Rooms
-	 *
-	 * @param theRoom
-	 *            The room to add to the world.
-	 */
-	private void addRoom(Room theRoom) {
-		rooms.put(theRoom.getName().toLowerCase(), theRoom);
-	}
+    /** Adds a room to the world. */
+    private void addRoom(Room room) {
+        rooms.put(room.getName().toLowerCase(), room);
+    }
 
-	/**
-	 * Helper method for creating doors between rooms.
-	 *
-	 * @param from
-	 *            The room where the door originates.
-	 * @param north
-	 *            The room to the north of the originating room.
-	 */
-	private void createNorthDoor(Room from, Room north) {
-		Door northDoor = new Door(north);
-		from.northExit = northDoor;
-	}
+    /** Connects two rooms with a directional door. */
+    private void createDoor(Room from, String direction, Room to) {
+        from.setExit(direction, new Door(to));
+    }
 
-	/**
-	 * Helper method for creating doors between rooms.
-	 *
-	 * @param from
-	 *            The room where the door originates.
-	 * @param east
-	 *            The room to the east of the originating room.
-	 */
-	private void createEastDoor(Room from, Room east) {
-		Door eastDoor = new Door(east);
-		from.eastExit = eastDoor;
-	}
+    /**
+     * Creates all rooms and connects them based on the map.
+     */
+    private void createRooms() {
 
-	/**
-	 * Helper method for creating doors between rooms.
-	 *
-	 * @param from
-	 *            The room where the door originates.
-	 * @param south
-	 *            The room to the south of the originating room.
-	 */
-	private void createSouthDoor(Room from, Room south) {
-		Door southDoor = new Door(south);
-		from.southExit = southDoor;
-	}
+        // Create rooms
+        Room cryopod     = new Room("Cryopod Room", "You awaken from cryofreeze after a century of sleep. Frost still clings to your pod. Dim lights flicker overhead.");
+        Room cafeteria   = new Room("Cafeteria", "The once-bustling crew cafeteria lies silent. Food trays float in zero‑G.");
+        Room observation = new Room("Observation Deck", "Massive glass panels reveal endless space. The faint hum of the ship’s engines echoes faintly.");
+        Room weapons     = new Room("Weapons Bay", "Weapons control panels blink with warnings. Red lights flash: ARMAMENT SYSTEMS OFFLINE.");
+        Room medical     = new Room("Medical Bay", "Dusty cryo‑beds line the wall. A med‑bot hums idly, waiting for commands.");
+        Room oxygen      = new Room("O2 Control", "The oxygen chamber smells of metal and ozone. Levels fluctuate dangerously — this needs repair.");
+        Room shields     = new Room("Shields/Ship Weapons", "Reinforced panels line this room. A console reads: 'Shields 43% — Priority Maintenance Required.'");
+        Room engine      = new Room("Engine Room/Reactor Core", "Pulsating light from the reactor core bathes the room in blue. Power conduits stretch in all directions.");
+        Room science     = new Room("Science Lab", "Beakers float mid‑air. Experiments from a century ago lie frozen in time.");
+        Room crew        = new Room("Crew Quarters", "Personal belongings drift through the air — echoes of a vanished crew.");
+        Room storage     = new Room("Storage", "A cluttered cargo bay. You might find useful supplies or keycards here.");
+        Room comms       = new Room("Communications", "A static filled console flickers ‘SPACECOM LINK OFFLINE’. Reboot needed.");
+        Room maintenance = new Room("Maintenance Tunnel", "A narrow corridor full of pipes and wires — some flicker with stray arcs of electricity.");
 
-	/**
-	 * Helper method for creating doors between rooms.
-	 *
-	 * @param from
-	 *            The room where the door originates.
-	 * @param west
-	 *            The room to the west of the originating room.
-	 */
-	private void createWestDoor(Room from, Room west) {
-		Door westDoor = new Door(west);
-		from.westExit = westDoor;
-	}
+        // Add rooms to world
+        addRoom(cryopod);
+        addRoom(cafeteria);
+        addRoom(observation);
+        addRoom(weapons);
+        addRoom(medical);
+        addRoom(oxygen);
+        addRoom(shields);
+        addRoom(engine);
+        addRoom(science);
+        addRoom(crew);
+        addRoom(storage);
+        addRoom(comms);
+        addRoom(maintenance);
 
-	/**
-	 * This method creates all of the individual places in this world and all
-	 * the doors connecting them.
-	 */
-	private void createRooms() {
-		// Creating all the rooms.
-		Room outside = new Room("Outside", "outside in the center of the King's College campus.");
-		Room holyCross = new Room("Holy Cross", "at one of two main dormitories on campus.");
-		Room essef = new Room("Essef", "at the other main dormitory on campus.");
-		Room campusCenter = new Room("Campus Center", "in the center of student activities on campus.");
-		Room admin = new Room("Admin", "in the oldest building on campus and home to the computer science department.");
-		Room slivaOffice = new Room("Sliva's Office", "in Dr Sliva's office.");
-		Room janoskiOffice = new Room("Janoski's Office", "in Dr Janoski's office.");
-		Room lab = new Room("Computer Lab", "in the Computer Science and Math computing lab.");
-		Room classroom = new Room("Classroom", "in the classroom where the computer science classes are taught.");
+        // ------------------------------------------------------------
+        // Create connections
+        // ------------------------------------------------------------
 
-		// Adding all the rooms to the world.
-		this.addRoom(outside);
-		this.addRoom(holyCross);
-		this.addRoom(essef);
-		this.addRoom(campusCenter);
-		this.addRoom(admin);
-		this.addRoom(slivaOffice);
-		this.addRoom(janoskiOffice);
-		this.addRoom(lab);
-		this.addRoom(classroom);
+        // Starting area progression
+        createDoor(cryopod, "east", cafeteria);
+        createDoor(cafeteria, "west", cryopod);
 
-		// Creating all the doors between the rooms.
-		this.createSouthDoor(essef, outside);
-		this.createNorthDoor(outside, essef);
+        createDoor(cafeteria, "south", weapons);
+        createDoor(weapons, "north", cafeteria);
 
-		this.createEastDoor(campusCenter, outside);
-		this.createWestDoor(outside, campusCenter);
+        createDoor(cafeteria, "east", observation);
+        createDoor(observation, "west", cafeteria);
 
-		this.createEastDoor(outside, holyCross);
-		this.createWestDoor(holyCross, outside);
+        // Weapons connections
+        createDoor(weapons, "east", medical);
+        createDoor(medical, "west", weapons);
 
-		this.createSouthDoor(outside, admin);
-		this.createNorthDoor(admin, outside);
+        createDoor(weapons, "west", maintenance);
+        createDoor(maintenance, "east", weapons);
 
-		this.createEastDoor(admin, lab);
-		this.createWestDoor(lab, admin);
+        createDoor(weapons, "south", engine);
+        createDoor(engine, "north", weapons);
 
-		this.createSouthDoor(admin, janoskiOffice);
-		this.createNorthDoor(janoskiOffice, admin);
+        // Lock the door from the Weapons Bay side so you can’t go south until using keycard
+        weapons.getExit("south").setLocked(true);
 
-		this.createWestDoor(admin, slivaOffice);
-		this.createEastDoor(slivaOffice, admin);
 
-		this.createSouthDoor(lab, classroom);
-		this.createNorthDoor(classroom, lab);
-	}
+     // From Medical Bay to Oxygen Control (stay unlocked)
+        createDoor(medical, "south", oxygen);
+        createDoor(oxygen, "north", medical);
+
+        // Oxygen / Shields / Storage region
+        createDoor(oxygen, "east", shields);
+        createDoor(shields, "west", oxygen);   // Lock initially (Red Keycard)
+        
+     // From Oxygen Control to Storage (stay unlocked)
+        createDoor(oxygen, "south", storage);
+        createDoor(storage, "north", oxygen);
+
+        createDoor(storage, "west", crew);
+        createDoor(crew, "east", storage);
+
+        // Bottom loop: crew–science–comms
+        createDoor(crew, "west", science);
+        createDoor(science, "east", crew);
+        createDoor(science, "south", comms);
+        createDoor(comms, "north", science);   // Lock initially (Green Keycard)
+        
+        // Maintenance passage connects back to Cryopod (shortcut later)
+        createDoor(maintenance, "north", cryopod);
+        createDoor(cryopod, "south", maintenance);
+
+        // ------------------------------------------------------------
+        // Lock sequences — players find keycards gradually
+        // ------------------------------------------------------------
+        engine.getExit("north").setLocked(true);     // needs Blue Keycard
+        shields.getExit("west").setLocked(true);     // needs Red Keycard
+        comms.getExit("north").setLocked(true);      // needs Green Keycard
+    }
 }

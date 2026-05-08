@@ -1,202 +1,371 @@
 package edu.kings;
+
 /**
- * This class is the main class of the "Campus of Kings" application.
- * "Campus of Kings" is a very simple, text based adventure game. Users can walk
- * around some scenery. That's all. It should really be extended to make it more
- * interesting!
- *
- * This game class creates and initializes all the others: it creates all rooms,
- * creates the parser and starts the game. It also evaluates and executes the
- * commands that the parser returns.
- *
- * @author Maria Jump
- * @version 2015.02.01
- *
- * Used with permission from Dr. Maria Jump at Northeastern University
+ * This class is the main class of the "Savior of HUmanity" application.
+ * "Savior of Humanity" is a very simple, text based adventure game. Users must complete a number 
+ * of tasks to repair their ship and 
+ * explore space onward to SAVE HUMANITY!
+ * 
+ * @author Cody Aniche-Farrell
  */
-
 public class Game {
-	/** The world where the game takes place. */
-	private World world;
-	/** The room the player character is currently in. */
-	private Room currentRoom;
 
-	/**
-	 * Create the game and initialize its internal map.
-	 */
-	public Game() {
-		world = new World();
-		// set the starting room
-		currentRoom = world.getRoom("outside");
-	}
+    /** The world where the game takes place. */
+    private World world;
 
-	/**
-	 * Main play routine. Loops until end of play.
-	 */
-	public void play() {
-		printWelcome();
+    /** The player character. */
+    private Player player;
 
-		// Enter the main game loop. Here we repeatedly read commands and
-		// execute them until the game is over.
-		boolean wantToQuit = false;
-		while (!wantToQuit) {
-			Command command = Reader.getCommand();
-			wantToQuit = processCommand(command);
-			// other stuff that needs to happen every turn can be added here.
-		}
-		printGoodbye();
-	}
+    /** The player's score. */
+    private int score = 0;
 
-	///////////////////////////////////////////////////////////////////////////
-	// Helper methods for processing the commands
+    /** The total number of turns taken. */
+    private int total_number_of_turns = 0;
+    /** Maximum number of turns before the ship's oxygen runs out. */
+    private static final int MAX_TURNS_BEFORE_DEATH = 50;
 
-	/**
-	 * Given a command, process (that is: execute) the command.
-	 *
-	 * @param command
-	 *            The command to be processed.
-	 * @return true If the command ends the game, false otherwise.
-	 */
-	private boolean processCommand(Command command) {
-		boolean wantToQuit = false;
+    /** Whether the player has already lost. */
+    private boolean hasLost = false;
 
-		if (command.isUnknown()) {
-			Writer.println("I don't know what you mean...");
-		} else {
+    /**
+     * Create the game and initialize its internal map.
+     */
+    /**
+     * Create the game and initialize its internal map.
+     */
+    public Game() {
+        world = new World();
+        // Set the starting room to the Cryopod Room (the first room of your ship)
+        player = new Player(world.getRoom("Cryopod Room"));
+    }
 
-			String commandWord = command.getCommandWord();
-			if (commandWord.equals("help")) {
-				printHelp();
-			} else if (commandWord.equals("go")) {
-				goRoom(command);
-			} else if (commandWord.equals("quit")) {
-				wantToQuit = quit(command);
-			} else {
-				Writer.println(commandWord + " is not implemented yet!");
-			}
-		}
-		return wantToQuit;
-	}
+    /**
+     * Main play routine. Loops until end of play.
+     */
+    public void play() {
+        printWelcome();
 
-	///////////////////////////////////////////////////////////////////////////
-	// Helper methods for implementing all of the commands.
-	// It helps if you organize these in alphabetical order.
+        // Enter the main game loop. Here we repeatedly read commands and
+        // execute them until the game is over.
+        boolean wantToQuit = false;
+        while (!wantToQuit && !hasLost) {
+            Command command = Reader.getCommand();
+            total_number_of_turns++;
+            if (total_number_of_turns == MAX_TURNS_BEFORE_DEATH / 2) {
+                Writer.println("Oxygen levels dropping. Systems failing — find the Reactor soon!");
+            }
+            wantToQuit = processCommand(command);
 
-	/**
-	 * Try to go to one direction. If there is an exit, enter the new room,
-	 * otherwise print an error message.
-	 *
-	 * @param command
-	 *            The command to be processed.
-	 */
-	private void goRoom(Command command) {
-		if (!command.hasSecondWord()) {
-			// if there is no second word, we don't know where to go...
-			Writer.println("Go where?");
-		} else {
-			String direction = command.getRestOfLine();
+            // Check lose condition each turn if not already lost or quit
+            if (!wantToQuit && checkLoss()) {
+                System.exit(0);
+            }
+        }
 
-			// Try to leave current.
-			Door doorway = null;
-			if (direction.equals("north")) {
-				doorway = currentRoom.northExit;
-			}
-			if (direction.equals("east")) {
-				doorway = currentRoom.eastExit;
-			}
-			if (direction.equals("south")) {
-				doorway = currentRoom.southExit;
-			}
-			if (direction.equals("west")) {
-				doorway = currentRoom.westExit;
-			}
+        printGoodbye();
+    }
 
-			if (doorway == null) {
-				Writer.println("There is no door!");
-			} else {
-				Room newRoom = doorway.getDestination();
-				currentRoom = newRoom;
-				Writer.println(newRoom.getName() + ":");
-				Writer.println("You are " + newRoom.getDescription());
-				Writer.print("Exits: ");
-				if (newRoom.northExit != null) {
-					Writer.print("north ");
-				}
-				if (newRoom.eastExit != null) {
-					Writer.print("east ");
-				}
-				if (newRoom.southExit != null) {
-					Writer.print("south ");
-				}
-				if (newRoom.westExit != null) {
-					Writer.print("west ");
-				}
-				Writer.println();
-			}
-		}
-	}
+    ///////////////////////////////////////////////////////////////////////////
+    // Helper methods for processing the commands
 
-	/**
-	 * Print out the closing message for the player.
-	 */
-	private void printGoodbye() {
-		Writer.println("I hope you weren't too bored here on the Campus of Kings!");
-		Writer.println("Thank you for playing.  Good bye.");
-	}
+    /**
+     * Given a command, process (that is: execute) the command.
+     *
+     * @param command
+     *            The command to be processed.
+     * @return true If the command ends the game, false otherwise.
+     */
+    private boolean processCommand(Command command) {
+        boolean wantToQuit = false;
 
-	/**
-	 * Print out some help information. Here we print some stupid, cryptic
-	 * message and a list of the command words.
-	 */
-	private void printHelp() {
-		Writer.println("You are lost. You are alone. You wander");
-		Writer.println("around at the university.");
-		Writer.println();
-		Writer.println("Your command words are:");
-		Writer.println("   go quit help");
-	}
+        if (command.isUnknown()) {
+            Writer.println("I don't know what you mean...");
+            return false;
+        }
 
-	/**
-	 * Print out the opening message for the player.
-	 */
-	private void printWelcome() {
-		Writer.println();
-		Writer.println("Welcome to the Campus of Kings!");
-		Writer.println("Campus of Kings is a new, incredibly boring adventure game.");
-		Writer.println("Type 'help' if you need help.");
-		Writer.println();
-		Writer.println(currentRoom.getName() + ":");
-		Writer.println("You are " + currentRoom.getDescription());
-		Writer.print("Exits: ");
-		if (currentRoom.northExit != null) {
-			Writer.print("north ");
-		}
-		if (currentRoom.eastExit != null) {
-			Writer.print("east ");
-		}
-		if (currentRoom.southExit != null) {
-			Writer.print("south ");
-		}
-		if (currentRoom.westExit != null) {
-			Writer.print("west ");
-		}
-		Writer.println("");
-	}
+        String commandWord = command.getCommandWord();
 
-	/**
-	 * "Quit" was entered. Check the rest of the command to see whether we
-	 * really quit the game.
-	 *
-	 * @param command
-	 *            The command to be processed.
-	 * @return true, if this command quits the game, false otherwise.
-	 */
-	private boolean quit(Command command) {
-		boolean wantToQuit = true;
-		if (command.hasSecondWord()) {
-			Writer.println("Quit what?");
-			wantToQuit = false;
-		}
-		return wantToQuit;
-	}
+        switch (commandWord) {
+            case "help":
+                printHelp();
+                break;
+            case "go":
+                goRoom(command);
+                break;
+            case "look":
+                look1();
+                break;
+            case "take":
+                take1(command);
+                break;
+            case "inventory":
+                Writer.println(player.toString());
+                break;
+            case "use":
+                use(command);
+                break;
+            case "quit":
+                wantToQuit = quit(command);
+                break;
+            default:
+                Writer.println(commandWord + " is not implemented yet!");
+        }
+        return wantToQuit;
+    }
+    /** Uses a keycard to unlock doors in specific rooms. */
+    private void use(Command command) {
+        if (!command.hasSecondWord()) {
+            Writer.println("Use what?");
+            return;
+        }
+
+        String item = command.getRestOfLine().trim();
+
+        if (!player.hasItem(item)) {
+            Writer.println("You don’t have that item.");
+            return;
+        }
+
+        Room room = player.getCurrentRoom();
+        boolean unlocked = false;
+
+        // Blue Keycard unlocks Weapons→Engine door
+        if (item.equalsIgnoreCase("Blue Keycard") &&
+            room.getName().equalsIgnoreCase("Weapons Bay")) {
+            Door engineDoor = room.getExit("south");
+            if (engineDoor != null && engineDoor.isLocked()) {
+                engineDoor.setLocked(false);
+                Writer.println("You swipe the Blue Keycard. The door to the Engine Room clicks open.");
+                unlocked = true;
+            }
+        }
+
+        // Red Keycard unlocks O2→Shields door
+        else if (item.equalsIgnoreCase("Red Keycard") &&
+                 room.getName().equalsIgnoreCase("O2 Control")) {
+            Door shieldDoor = room.getExit("east");
+            if (shieldDoor != null && shieldDoor.isLocked()) {
+                shieldDoor.setLocked(false);
+                Writer.println("You swipe the Red Keycard. Access to the Shield Room granted.");
+                unlocked = true;
+            }
+        }
+
+        // Green Keycard unlocks Science→Comms door
+        else if (item.equalsIgnoreCase("Green Keycard") &&
+                 room.getName().equalsIgnoreCase("Science Lab")) {
+            Door commsDoor = room.getExit("south");
+            if (commsDoor != null && commsDoor.isLocked()) {
+                commsDoor.setLocked(false);
+                Writer.println("You swipe the Green Keycard. Communication systems accessible!");
+                unlocked = true;
+            }
+        }
+
+        if (!unlocked) {
+            Writer.println("That keycard doesn’t seem to work here.");
+        }
+    }
+
+
+	/** Describes the current room and visible items. */
+    private void look1() {
+        Room room = player.getCurrentRoom();
+        Writer.println("You are in " + room.getName() + ".");
+        Writer.println(room.getDescription());
+
+        // Add flavor: items in specific rooms
+        switch (room.getName().toLowerCase()) {
+            case "storage":
+                Writer.println("You see a shimmering Blue Keycard here.");
+                break;
+            case "medical bay":
+                Writer.println("A Red Keycard lies beside an inactive med-bot.");
+                break;
+            case "science lab":
+                Writer.println("A Green Keycard floats near the research terminal.");
+                break;
+            default:
+                Writer.println("There’s nothing special here.");
+        }
+    }
+
+    /** Lets the player take items from certain rooms. */
+    private void take1(Command command) {
+        if (!command.hasSecondWord()) {
+            Writer.println("Take what?");
+            return;
+        }
+
+        String item = command.getRestOfLine();
+        Room room = player.getCurrentRoom();
+        boolean taken = false;
+
+        if (room.getName().equalsIgnoreCase("Storage") && item.equalsIgnoreCase("Blue Keycard")) {
+            player.addItem("Blue Keycard");
+            Writer.println("You pick up the Blue Keycard!");
+            taken = true;
+        } else if (room.getName().equalsIgnoreCase("Medical Bay") && item.equalsIgnoreCase("Red Keycard")) {
+            player.addItem("Red Keycard");
+            Writer.println("You grab the Red Keycard!");
+            taken = true;
+        } else if (room.getName().equalsIgnoreCase("Science Lab") && item.equalsIgnoreCase("Green Keycard")) {
+            player.addItem("Green Keycard");
+            Writer.println("You take the Green Keycard!");
+            taken = true;
+        }
+
+        if (!taken) {
+            Writer.println("There’s nothing like that here.");
+        }
+    }
+
+    /**
+     * Try to go to one direction. If there is an exit, enter the new room,
+     * otherwise print an error message.
+     *
+     * @param command
+     *            The command to be processed.
+     */
+    /**
+     * Try to go to one direction. If there is an exit,
+     * enter the new room unless it’s locked.
+     */
+    private void goRoom(Command command) {
+        if (!command.hasSecondWord()) {
+            Writer.println("Go where?");
+            return;
+        }
+
+        String direction = command.getRestOfLine();
+        Door door = player.getCurrentRoom().getExit(direction);
+
+        if (door == null) {
+            Writer.println("There’s no passage that way.");
+            return;
+        }
+
+        if (door.isLocked()) {
+            Writer.println("The door is locked. You might need a keycard.");
+            return;
+        }
+
+        player.setCurrentRoom(door.getDestination());
+        printLocationInformation();
+
+        // Check for victory after entering a new room
+        if (checkVictory()) {
+            System.exit(0);  // End the game after the victory message prints
+        }
+    }
+
+    /**
+     * Checks if the player has achieved the victory condition.
+     * The player wins by entering the Engine Room after unlocking all keycard doors.
+     */
+    private boolean checkVictory() {
+        Room current = player.getCurrentRoom();
+
+        // Win condition: player is in Engine Room/Reactor Core
+        // after having collected all three keycards.
+        if (current.getName().equalsIgnoreCase("Engine Room/Reactor Core")) {
+            if (player.hasItem("Blue Keycard") && player.hasItem("Red Keycard") && player.hasItem("Green Keycard")) {
+                Writer.println();
+                Writer.println("You insert all three keycards into the reactor console...");
+                Writer.println("The ship's systems roar back to life!");
+                Writer.println("Humanity will survive and you’ve reignited hope among the stars!");
+                Writer.println();
+                Writer.println("CONGRATULATIONS, YOU CAN NOW EXPLORE SPACE FOR A CURE TO SAVE HUMANITY!");
+                score += 100;
+                return true;
+            }
+        }
+
+        return false;
+    }
+    /**
+     * Checks if the ship has run out of oxygen and ends the game.
+     */
+    private boolean checkLoss() {
+        if (total_number_of_turns >= MAX_TURNS_BEFORE_DEATH) {
+            Writer.println();
+            Writer.println("WARNING: Oxygen levels critical!");
+            Writer.println("You collapse to the floor as the ship’s life‑support systems fail...");
+            Writer.println("Darkness closes in as the Ecliptica drifts into the void.");
+            Writer.println();
+            Writer.println("YOU HAVE FAILED ");
+            hasLost = true;
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Prints out the current location and exits.
+     */
+    private void printLocationInformation() {
+        Writer.println(player.getCurrentRoom().toString());
+    }
+
+    /**
+     * Print out the closing message for the player.
+     */
+    private void printGoodbye() {
+        Writer.println("Mission terminated. Humanity awaits the outcome of your voyage.");
+        Writer.println("You have earned " + score + " points in " + total_number_of_turns + " turns.");
+    }
+    
+
+    /**
+     * Print out some help information. Here we print some stupid, cryptic
+     * message and a list of the command words.
+     */
+    /**
+     * Print out some help information and list of commands.
+     */
+    private void printHelp() {
+        Writer.println("You are aboard the starship *Ecliptica*.");
+        Writer.println("Explore rooms, find keycards, and restart the reactor to save humanity.");
+        Writer.println();
+        Writer.println("Available commands:");
+        Writer.println("go <direction> - Move north, south, east, or west");
+        Writer.println("look - Examine your surroundings");
+        Writer.println("take <item> - Pick up an item in the room");
+        Writer.println("use <item> - Use an item, like a keycard, to unlock a door");
+        Writer.println("inventory - View items you’re carrying");
+        Writer.println("help - Display this list again");
+        Writer.println("quit - End the game");
+    }
+
+
+    /**
+     * Print out the opening message for the player.
+     */
+    private void printWelcome() {
+        Writer.println();
+        Writer.println("Welcome aboard the starship *Ecliptica*.");
+        Writer.println("You are humanity’s last hope — a lone explorer waking from cryofreeze.");
+        Writer.println("Explore the ship, gather keycards, and restart the engines to save Earth.");
+        Writer.println("Type 'help' for a list of commands.");
+        Writer.println();
+        printLocationInformation();
+    }
+
+    /**
+     * "Quit" was entered. Check the rest of the command to see whether we
+     * really quit the game.
+     *
+     * @param command
+     *            The command to be processed.
+     * @return true, if this command quits the game, false otherwise.
+     */
+    private boolean quit(Command command) {
+        boolean wantToQuit = true;
+        if (command.hasSecondWord()) {
+            Writer.println("Quit what?");
+            wantToQuit = false;
+        }
+        return wantToQuit;
+    }
 }
