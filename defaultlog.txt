@@ -1,13 +1,20 @@
 
-Welcome to the Campus of Kings!
-Campus of Kings is a new, incredibly boring adventure game.
-Type 'help' if you need help.
+Welcome aboard the starship *Ecliptica*.
+You are humanity’s last hope — a lone explorer waking from cryofreeze.
+Explore the ship, gather keycards, and restart the engines to save Earth.
+Type 'help' for a list of commands.
 
-Outside:
-You are outside in the center of the King's College campus.
-Exits: north east south west 
-> exit
-I don't know what you mean...
-> quit
-I hope you weren't too bored here on the Campus of Kings!
-Thank you for playing.  Good bye.
+edu.kings.Room@319b92f3
+> help
+You are aboard the starship *Ecliptica*.
+Explore rooms, find keycards, and restart the reactor to save humanity.
+
+Available commands:
+go <direction> - Move north, south, east, or west
+look - Examine your surroundings
+take <item> - Pick up an item in the room
+use <item> - Use an item, like a keycard, to unlock a door
+inventory - View items you’re carrying
+help - Display this list again
+quit - End the game
+> 

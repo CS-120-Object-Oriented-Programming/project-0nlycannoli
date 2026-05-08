@@ -5,7 +5,7 @@ import java.util.HashMap;
 /**
  * Class Room - a room in an adventure game.
  *
- * This class is part of the "Campus of Kings" application. "Campus of Kings" is a
+ * This class is part of the "Savior of Humanity" application. "Savior of Humanity" is a
  * very simple, text based adventure game.
  *
  * A "Room" represents one location in the scenery of the game. It is connected
