@@ -112,9 +112,61 @@ public class Game {
         }
         return wantToQuit;
     }
+    /** Uses a keycard to unlock doors in specific rooms. */
     private void use(Command command) {
-		
-	}
+        if (!command.hasSecondWord()) {
+            Writer.println("Use what?");
+            return;
+        }
+
+        String item = command.getRestOfLine().trim();
+
+        if (!player.hasItem(item)) {
+            Writer.println("You don’t have that item.");
+            return;
+        }
+
+        Room room = player.getCurrentRoom();
+        boolean unlocked = false;
+
+        // Blue Keycard unlocks Weapons→Engine door
+        if (item.equalsIgnoreCase("Blue Keycard") &&
+            room.getName().equalsIgnoreCase("Weapons Bay")) {
+            Door engineDoor = room.getExit("south");
+            if (engineDoor != null && engineDoor.isLocked()) {
+                engineDoor.setLocked(false);
+                Writer.println("You swipe the Blue Keycard. The door to the Engine Room clicks open.");
+                unlocked = true;
+            }
+        }
+
+        // Red Keycard unlocks O2→Shields door
+        else if (item.equalsIgnoreCase("Red Keycard") &&
+                 room.getName().equalsIgnoreCase("O2 Control")) {
+            Door shieldDoor = room.getExit("east");
+            if (shieldDoor != null && shieldDoor.isLocked()) {
+                shieldDoor.setLocked(false);
+                Writer.println("You swipe the Red Keycard. Access to the Shield Room granted.");
+                unlocked = true;
+            }
+        }
+
+        // Green Keycard unlocks Science→Comms door
+        else if (item.equalsIgnoreCase("Green Keycard") &&
+                 room.getName().equalsIgnoreCase("Science Lab")) {
+            Door commsDoor = room.getExit("south");
+            if (commsDoor != null && commsDoor.isLocked()) {
+                commsDoor.setLocked(false);
+                Writer.println("You swipe the Green Keycard. Communication systems accessible!");
+                unlocked = true;
+            }
+        }
+
+        if (!unlocked) {
+            Writer.println("That keycard doesn’t seem to work here.");
+        }
+    }
+
 
 	/** Describes the current room and visible items. */
     private void look1() {

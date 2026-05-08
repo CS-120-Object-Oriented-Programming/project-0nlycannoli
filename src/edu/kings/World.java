@@ -60,10 +60,11 @@ public class World {
         Room engine      = new Room("Engine Room/Reactor Core", "Pulsating light from the reactor core bathes the room in blue. Power conduits stretch in all directions.");
         Room science     = new Room("Science Lab", "Beakers float mid‑air. Experiments from a century ago lie frozen in time.");
         Room crew        = new Room("Crew Quarters", "Personal belongings drift through the air — echoes of a vanished crew.");
-        Room storage      = new Room("Storage", "A cluttered cargo bay. You might find useful supplies or keycards here.");
-        Room comms       = new Room("Communications", "A static‑filled console flickers ‘SPACECOM LINK OFFLINE’. Reboot needed.");
+        Room storage     = new Room("Storage", "A cluttered cargo bay. You might find useful supplies or keycards here.");
+        Room comms       = new Room("Communications", "A static filled console flickers ‘SPACECOM LINK OFFLINE’. Reboot needed.");
+        Room maintenance = new Room("Maintenance Tunnel", "A narrow corridor full of pipes and wires — some flicker with stray arcs of electricity.");
 
-        // Add rooms to map
+        // Add rooms to world
         addRoom(cryopod);
         addRoom(cafeteria);
         addRoom(observation);
@@ -76,68 +77,66 @@ public class World {
         addRoom(crew);
         addRoom(storage);
         addRoom(comms);
+        addRoom(maintenance);
 
-        // Connections (approximating your diagram)
+        // ------------------------------------------------------------
+        // Create connections
+        // ------------------------------------------------------------
 
-        // Cryopod Room -> Cafeteria
+        // Starting area progression
         createDoor(cryopod, "east", cafeteria);
         createDoor(cafeteria, "west", cryopod);
 
-        // Cafeteria <-> Observation Deck
-        createDoor(cafeteria, "east", observation);
-        createDoor(observation, "west", cafeteria);
-
-        // Cafeteria <-> Weapons
         createDoor(cafeteria, "south", weapons);
         createDoor(weapons, "north", cafeteria);
 
-        // Weapons <-> Medical Bay
+        createDoor(cafeteria, "east", observation);
+        createDoor(observation, "west", cafeteria);
+
+        // Weapons connections
         createDoor(weapons, "east", medical);
         createDoor(medical, "west", weapons);
 
-        // Weapons <-> Engine Room
+        createDoor(weapons, "west", maintenance);
+        createDoor(maintenance, "east", weapons);
+
         createDoor(weapons, "south", engine);
         createDoor(engine, "north", weapons);
 
-        // Medical <-> O2
+        // Lock the door from the Weapons Bay side so you can’t go south until using keycard
+        weapons.getExit("south").setLocked(true);
+
+
+     // From Medical Bay to Oxygen Control (stay unlocked)
         createDoor(medical, "south", oxygen);
         createDoor(oxygen, "north", medical);
 
-        // O2 <-> Shields
+        // Oxygen / Shields / Storage region
         createDoor(oxygen, "east", shields);
-        createDoor(shields, "west", oxygen);
-
-        // O2 <-> Storage
+        createDoor(shields, "west", oxygen);   // Lock initially (Red Keycard)
+        
+     // From Oxygen Control to Storage (stay unlocked)
         createDoor(oxygen, "south", storage);
         createDoor(storage, "north", oxygen);
 
-        // Engine Room <-> Science Lab
-        createDoor(engine, "west", science);
-        createDoor(science, "east", engine);
-
-        // Science Lab <-> Communications
-        createDoor(science, "south", comms);
-        createDoor(comms, "north", science);
-
-        // Engine Room <-> Crew Quarters
-        createDoor(engine, "south", crew);
-        createDoor(crew, "north", engine);
-
-        // Crew Quarters <-> Storage
-        createDoor(crew, "east", storage);
         createDoor(storage, "west", crew);
-    
-        // Lock some key areas that require keycards
-        engine.getExit("north").setLocked(true);     // Weapons -> Engine Room
-        oxygen.getExit("east").setLocked(true);      // O2 -> Shields
-        science.getExit("south").setLocked(true);    // Science Lab -> Communications
+        createDoor(crew, "east", storage);
 
-        // Add note: keys needed
-        /*
-         * Engine Room/Reactor Core: needs Blue Keycard
-         * Shields/Ship Weapons: needs Red Keycard
-         * Communications: needs Green Keycard
-         */
+        // Bottom loop: crew–science–comms
+        createDoor(crew, "west", science);
+        createDoor(science, "east", crew);
+        createDoor(science, "south", comms);
+        createDoor(comms, "north", science);   // Lock initially (Green Keycard)
+        
+        // Maintenance passage connects back to Cryopod (shortcut later)
+        createDoor(maintenance, "north", cryopod);
+        createDoor(cryopod, "south", maintenance);
 
+        // ------------------------------------------------------------
+        // Lock sequences — players find keycards gradually
+        // ------------------------------------------------------------
+        engine.getExit("north").setLocked(true);     // needs Blue Keycard
+        shields.getExit("west").setLocked(true);     // needs Red Keycard
+        comms.getExit("north").setLocked(true);      // needs Green Keycard
     }
-} 
+}

@@ -6,9 +6,115 @@ Type 'help' for a list of commands.
 
 You are in the Cryopod Room.
 You awaken from cryofreeze after a century of sleep. Frost still clings to your pod. Dim lights flicker overhead.
-Exits: east 
+Exits: east south 
+
+> help
+You are aboard the starship *Ecliptica*.
+Explore rooms, find keycards, and restart the reactor to save humanity.
+
+Available commands:
+go <direction> - Move north, south, east, or west
+look - Examine your surroundings
+take <item> - Pick up an item in the room
+use <item> - Use an item, like a keycard, to unlock a door
+inventory - View items you’re carrying
+help - Display this list again
+quit - End the game
+> go east
+You are in the Cafeteria.
+The once-bustling crew cafeteria lies silent. Food trays float in zero‑G.
+Exits: east south west 
+
+> go south
+You are in the Weapons Bay.
+Weapons control panels blink with warnings. Red lights flash: ARMAMENT SYSTEMS OFFLINE.
+Exits: east south north west 
+
+> go west
+You are in the Maintenance Tunnel.
+A narrow corridor full of pipes and wires — some flicker with stray arcs of electricity.
+Exits: east north 
 
 > go east
+You are in the Weapons Bay.
+Weapons control panels blink with warnings. Red lights flash: ARMAMENT SYSTEMS OFFLINE.
+Exits: east south north west 
+
+> go south
+The door is locked. You might need a keycard.
+> go west
+You are in the Maintenance Tunnel.
+A narrow corridor full of pipes and wires — some flicker with stray arcs of electricity.
+Exits: east north 
+
+> go north
+You are in the Cryopod Room.
+You awaken from cryofreeze after a century of sleep. Frost still clings to your pod. Dim lights flicker overhead.
+Exits: east south 
+
+> go south
+You are in the Maintenance Tunnel.
+A narrow corridor full of pipes and wires — some flicker with stray arcs of electricity.
+Exits: east north 
+
+> go east
+You are in the Weapons Bay.
+Weapons control panels blink with warnings. Red lights flash: ARMAMENT SYSTEMS OFFLINE.
+Exits: east south north west 
+
+> go west
+You are in the Maintenance Tunnel.
+A narrow corridor full of pipes and wires — some flicker with stray arcs of electricity.
+Exits: east north 
+
+> go north
+You are in the Cryopod Room.
+You awaken from cryofreeze after a century of sleep. Frost still clings to your pod. Dim lights flicker overhead.
+Exits: east south 
+
+> go south
+You are in the Maintenance Tunnel.
+A narrow corridor full of pipes and wires — some flicker with stray arcs of electricity.
+Exits: east north 
+
+> go east
+You are in the Weapons Bay.
+Weapons control panels blink with warnings. Red lights flash: ARMAMENT SYSTEMS OFFLINE.
+Exits: east south north west 
+
+> go west
+You are in the Maintenance Tunnel.
+A narrow corridor full of pipes and wires — some flicker with stray arcs of electricity.
+Exits: east north 
+
+> go north
+You are in the Cryopod Room.
+You awaken from cryofreeze after a century of sleep. Frost still clings to your pod. Dim lights flicker overhead.
+Exits: east south 
+
+> go east
+You are in the Cafeteria.
+The once-bustling crew cafeteria lies silent. Food trays float in zero‑G.
+Exits: east south west 
+
+> go east
+You are in the Observation Deck.
+Massive glass panels reveal endless space. The faint hum of the ship’s engines echoes faintly.
+Exits: west 
+
+> go west
+You are in the Cafeteria.
+The once-bustling crew cafeteria lies silent. Food trays float in zero‑G.
+Exits: east south west 
+
+> go south
+You are in the Weapons Bay.
+Weapons control panels blink with warnings. Red lights flash: ARMAMENT SYSTEMS OFFLINE.
+Exits: east south north west 
+
+> go south
+The door is locked. You might need a keycard.
+> go north
 You are in the Cafeteria.
 The once-bustling crew cafeteria lies silent. Food trays float in zero‑G.
 Exits: east south west 
